@@ -43,18 +43,25 @@ const day1 = {
 datastore.challenges = [day1];
 
 
+//
 // List challenges
+//
+
 router.get("/", function (req, res) {
 
     return sendSuccess(res, 200, datastore.challenges);
 });
 
 
+//
 // Post answer
+//
+
 datastore.answers = {};
+
 router.post("/:challenge/answers", function (req, res) {
 
-    const challengeId = req.params.challenge;
+    // [TODO] Check authentication
 
     // Retreive submitter's info
     const submitterProfile = "123456789";
@@ -71,14 +78,21 @@ router.post("/:challenge/answers", function (req, res) {
     }
 
     // Check the challenge exists
+    const challengeId = req.params.challenge;
     if (!challengeId) {
-        return sendError(res, 403, "could not retreive the challenge info");
+        return sendError(res, 403, "challenge does not exist", `no challenge found with id: ${challengeId}`);
     }
 
     // Check the submitter has not already submitted
-    const existing = datastore.answers[submitterProfile];
-    if (existing) {
-        return sendError(res, 409, "sorry but we already have a submission for this DevNet member", `created at: ${existing.createdAt}]`);
+    var submitterAnswers = datastore.answers[submitterProfile];
+    if (submitterAnswers) {
+        const existing = submitterAnswers[challengeId];
+        if (existing) {
+            return sendError(res, 409, "sorry but we already have a submission for this DevNet member", `created on ${existing.createdAt}`);
+        }
+    }
+    else {
+        submitterAnswers = {};
     }
 
     // Check answer is correct
@@ -88,7 +102,7 @@ router.post("/:challenge/answers", function (req, res) {
     }
 
     // Store answer
-    const answer = {
+    const newAnswer = {
         "createdAt": new Date(Date.now()).toISOString(),
         "data": {
             "weight": weight
@@ -100,9 +114,38 @@ router.post("/:challenge/answers", function (req, res) {
             "lastName": submitterLastname
         }
     };
-    datastore.answers[submitterProfile] = answer;
+    submitterAnswers[challengeId] = newAnswer;
+    datastore.answers[submitterProfile] = submitterAnswers;
 
-    return sendSuccess(res, 201, answer);
+    return sendSuccess(res, 201, newAnswer);
+});
+
+
+//
+// List answers
+//
+router.get("/:challenge/answers", function (req, res) {
+
+    // [TODO] Check authentication
+
+
+    // Check the challenge exists
+    const challengeId = req.params.challenge;
+    if (!challengeId) {
+        return sendError(res, 403, "challenge does not exist", `no challenge found with id: ${challengeId}`);
+    }
+
+    // Retreive answers for the challenge
+    var all = [];
+    Object.keys(datastore.answers).forEach(function (submitter) {
+        var submitterAnswers = datastore.answers[submitter]
+        var submitterAnswerToChallenge = submitterAnswers[challengeId];
+        if (submitterAnswerToChallenge) {
+            all.push(submitterAnswerToChallenge);
+        }
+    });
+
+    return sendSuccess(res, 200, all);
 });
 
 
