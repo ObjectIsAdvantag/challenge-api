@@ -1,8 +1,28 @@
 # Challenge API
 
-if runnning locally with node server.js, then $server = http://localhost:8080 below
+This REST API is a mock to run challenges at events.
+Basically participants can submit an answer to a challenge,
+and an algorithm will pick a winnder.
 
-## List challenges
+The data are mocked in this example.
+
+Here is a [postman collection](https://www.getpostman.com/collections/e0e12335f000aec5aa13) and [HTML documentation](https://documenter.getpostman.com/view/30210/cloudy-challenge-pixelscamp-public/6tgV21e#8fa7e9d1-9a9f-3436-0d65-3791d689b4d4) of the REST API.
+
+## Quick start
+
+```shell
+git clone
+cd 
+npm install
+DEBUG=api* node server.js
+```
+
+## Resources
+
+If runnning locally, replace $server with http://localhost:8080
+if running the heroku live demo, replace with https://pixelscamp-challenge.herokuapp.com
+
+### List challenges
 
 ```shell
 GET {{server}}/api/challenges
@@ -21,7 +41,7 @@ GET {{server}}/api/challenges
 ```
 
 
-## Submit answer
+### Submit answer
 
 ```shell
 POST {{server}}/api/challenges/pixelscamp2017-day1/answers
@@ -46,7 +66,7 @@ POST {{server}}/api/challenges/pixelscamp2017-day1/answers
 ```
 
 
-## List answers
+### List answers
 
 ```shell
 GET {{server}}/api/challenges/pixelscamp2017-day1/answers
