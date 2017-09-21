@@ -23,86 +23,13 @@ const sendSuccess = require('../utils').sendSuccess;
 //
 var datastore = {};
 
-// Current plan for PixelsCamp
-const day1 = {
-    "id": "pixelscamp2017-day1",
-    "event_id": "pixelscamp2017",
 
-    // descriptions: title, slug, rules
-    "form": {
-        "title": "Pixels Camp 2017: Grab the Bag! (September 28th)",
-        "slug": "Thanks for visiting our DevNet booth! Please enter your guess below for our daily giveaway.<br/>We will be giving away one bag per day and will announce the winner at 5pm. You must be a DevNet member and be present to win.",
-        "rules": "The one that You must be present to win. The daily winner will be the one that has the closest estimate to the exact weight. If there is a tie, the first one that entered it wins. Winner announced at 5pm. One submission per applicant. Must be present to win - we pick next closest estimate.",
-        "items": [
-            {
-                "question": "Enter Your Guess: Weight of the Bag (in grams)",
-                "slug": "For example: 3672",
-                "type": "integer"
-            }
-        ]
-    },
+//
+// Populate challenges
+//
 
-    // ISO format, GMT 
-    "begin": "2017-09-28T12:00:00.000Z", // 11AM, Lisbon (GMT+1)
-    "end": "2017-09-28T18:00:00.000Z", // 5PM, Lisbon (GMT+1)
-
-    // [TODO]compute from current time
-    // not started, active, cancelled, finished
-    "status": "not started"
-}
-const day2 = {
-    "id": "pixelscamp2017-day2",
-    "event_id": "pixelscamp2017",
-
-    // descriptions: title, slug, rules
-    "form": {
-        "title": "Pixels Camp 2017: Grab the Bag! (September 29th)",
-        "slug": "Thanks for visiting our DevNet booth! Please enter your guess below for our daily giveaway.<br/>We will be giving away one bag per day and will announce the winner at 5pm. You must be a DevNet member and be present to win.",
-        "rules": "The one that You must be present to win. The daily winner will be the one that has the closest estimate to the exact weight. If there is a tie, the first one that entered it wins. Winner announced at 5pm. One submission per applicant. Must be present to win - we pick next closest estimate.",
-        "items": [
-            {
-                "question": "Enter Your Guess: Weight of the Bag (in grams)",
-                "slug": "For example: 3672",
-                "type": "integer"
-            }
-        ]
-    },
-
-    // ISO format, GMT 
-    "begin": "2017-09-29T10:00:00.000Z", // 9AM, Lisbon (GMT+1)
-    "end": "2017-09-29T18:00:00.000Z", // 5PM, Lisbon (GMT+1)
-
-    // [TODO]compute from current time
-    // not started, active, cancelled, finished
-    "status": "not started"
-}
-const day3 = {
-    "id": "pixelscamp2017-day3",
-    "event_id": "pixelscamp2017",
-
-    // descriptions: title, slug, rules
-    "form": {
-        "title": "Pixels Camp 2017: Grab the Bag! (September 30th)",
-        "slug": "Thanks for visiting our DevNet booth! Please enter your guess below for our daily giveaway.<br/>We will be giving away one bag per day and will announce the winner at 4pm. You must be a DevNet member and be present to win.",
-        "rules": "The one that You must be present to win. The daily winner will be the one that has the closest estimate to the exact weight. If there is a tie, the first one that entered it wins. Winner announced at 4pm. One submission per applicant. Must be present to win - we pick next closest estimate.",
-        "items": [
-            {
-                "question": "Enter Your Guess: Weight of the Bag (in grams)",
-                "slug": "For example: 3672",
-                "type": "integer"
-            }
-        ]
-    },
-
-    // ISO format, GMT 
-    "begin": "2017-09-30T10:00:00.000Z", // 9AM, Lisbon (GMT+1)
-    "end": "2017-09-30T17:00:00.000Z", // 4PM, Lisbon (GMT+1)
-
-    // [TODO]compute from current time
-    // not started, active, cancelled, finished
-    "status": "not started"
-}
-datastore.challenges = [day1, day2, day3];
+var data = require("fs").readFileSync(__dirname + "/challenges.json", "UTF-8");
+datastore.challenges = JSON.parse(data);
 
 
 //
@@ -111,7 +38,38 @@ datastore.challenges = [day1, day2, day3];
 
 router.get("/", function (req, res) {
 
-    return sendSuccess(res, 200, datastore.challenges);
+    // [TODO] Check authentication
+    // Note that this resource could stay public, no sensitive data here
+
+    // Fetch the list of challenges (for the event specified / or not)
+    var challenges = datastore.challenges;
+    var filter = req.query["event_id"];
+    if (filter) {
+        var filtered = [];
+        Object.keys(challenges).forEach(function (challengeId) {
+            var challenge = challenges[challengeId];
+            if (challenge.event_id == filter) {
+                filtered.push(challenge);
+            }
+        });
+        challenges = filtered;
+    }
+
+    // Update the status property depending on the current date, versus start/begin dates
+    // enum: not started, active, cancelled, finished
+    var now = new Date(Date.now());
+
+    // Check is now was specified as a query parameter
+    if (req.query.now) {
+        now = new Date(req.query["now"]);
+    }
+
+    Object.keys(challenges).forEach(function (challengeId) {
+        var challenge = challenges[challengeId];
+        challenge.status = updateStatus(challenge, now);
+    });
+
+    return sendSuccess(res, 200, challenges);
 });
 
 
@@ -208,6 +166,8 @@ router.get("/:challenge/answers", function (req, res) {
         }
     });
 
+    // [TODO] order by createdDate ascending
+
     return sendSuccess(res, 200, all);
 });
 
@@ -244,3 +204,25 @@ router.get("/:challenge/winners", function (req, res) {
 
 
 module.exports = router;
+
+
+//
+// Utilities
+//
+
+function updateStatus(challenge, now) {
+
+    if (challenge.cancelled) {
+        return "cancelled";
+    }
+
+    if (now < new Date(challenge.begin)) {
+        return "not started";
+    }
+
+    if (now > new Date(challenge.end)) {
+        return "finished";
+    }
+
+    return "active";
+}

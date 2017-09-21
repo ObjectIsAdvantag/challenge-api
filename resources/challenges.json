@@ -1,0 +1,62 @@
+[
+    {
+        "id": "pixelscamp2017-day1",
+        "event_id": "pixelscamp2017",
+        "form": {
+            "title": "Pixels Camp 2017: Grab the Bag! (September 28th)",
+            "slug": "Thanks for visiting our DevNet booth! Please enter your guess below for our daily giveaway.<br/>We will be giving away one bag per day and will announce the winner at 5pm. You must be a DevNet member and be present to win.",
+            "rules": "The one that You must be present to win. The daily winner will be the one that has the closest estimate to the exact weight. If there is a tie, the first one that entered it wins. Winner announced at 5pm. One submission per applicant. Must be present to win - we pick next closest estimate.",
+            "items": [
+                {
+                    "question": "Enter Your Guess: Weight of the Bag (in grams)",
+                    "slug": "For example: 3672",
+                    "type": "integer"
+                }
+            ]
+        },
+        "begin": "2017-09-28T12:00:00.000Z", 
+        "end": "2017-09-28T18:00:00.000Z",
+        "status": "not started",
+        "cancelled": false
+    },
+    {
+        "id": "pixelscamp2017-day2",
+        "event_id": "pixelscamp2017",
+        "form": {
+            "title": "Pixels Camp 2017: Grab the Bag! (September 29th)",
+            "slug": "Thanks for visiting our DevNet booth! Please enter your guess below for our daily giveaway.<br/>We will be giving away one bag per day and will announce the winner at 5pm. You must be a DevNet member and be present to win.",
+            "rules": "The one that You must be present to win. The daily winner will be the one that has the closest estimate to the exact weight. If there is a tie, the first one that entered it wins. Winner announced at 5pm. One submission per applicant. Must be present to win - we pick next closest estimate.",
+            "items": [
+                {
+                    "question": "Enter Your Guess: Weight of the Bag (in grams)",
+                    "slug": "For example: 3672",
+                    "type": "integer"
+                }
+            ]
+        },
+        "begin": "2017-09-29T10:00:00.000Z", 
+        "end": "2017-09-29T18:00:00.000Z", 
+        "status": "not started",
+        "cancelled": false
+    },
+    {
+        "id": "pixelscamp2017-day3",
+        "event_id": "pixelscamp2017",
+        "form": {
+            "title": "Pixels Camp 2017: Grab the Bag! (September 30th)",
+            "slug": "Thanks for visiting our DevNet booth! Please enter your guess below for our daily giveaway.<br/>We will be giving away one bag per day and will announce the winner at 4pm. You must be a DevNet member and be present to win.",
+            "rules": "The one that You must be present to win. The daily winner will be the one that has the closest estimate to the exact weight. If there is a tie, the first one that entered it wins. Winner announced at 4pm. One submission per applicant. Must be present to win - we pick next closest estimate.",
+            "items": [
+                {
+                    "question": "Enter Your Guess: Weight of the Bag (in grams)",
+                    "slug": "For example: 3672",
+                    "type": "integer"
+                }
+            ]
+        },
+        "begin": "2017-09-30T10:00:00.000Z", 
+        "end": "2017-09-30T17:00:00.000Z", 
+        "status": "not started",
+        "cancelled": false
+    }
+]
