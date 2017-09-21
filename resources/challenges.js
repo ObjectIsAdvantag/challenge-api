@@ -29,18 +29,80 @@ const day1 = {
     "event_id": "pixelscamp2017",
 
     // descriptions: title, slug, rules
-
-    // questions
+    "form": {
+        "title": "Pixels Camp 2017: Grab the Bag! (September 28th)",
+        "slug": "Thanks for visiting our DevNet booth! Please enter your guess below for our daily giveaway.<br/>We will be giving away one bag per day and will announce the winner at 5pm. You must be a DevNet member and be present to win.",
+        "rules": "The one that You must be present to win. The daily winner will be the one that has the closest estimate to the exact weight. If there is a tie, the first one that entered it wins. Winner announced at 5pm. One submission per applicant. Must be present to win - we pick next closest estimate.",
+        "items": [
+            {
+                "question": "Enter Your Guess: Weight of the Bag (in grams)",
+                "slug": "For example: 3672",
+                "type": "integer"
+            }
+        ]
+    },
 
     // ISO format, GMT 
-    "begin": "2017-09-28T10:00:00.000Z", // 9AM, Lisbon (GMT+1)
+    "begin": "2017-09-28T12:00:00.000Z", // 11AM, Lisbon (GMT+1)
     "end": "2017-09-28T18:00:00.000Z", // 5PM, Lisbon (GMT+1)
 
     // [TODO]compute from current time
     // not started, active, cancelled, finished
     "status": "not started"
 }
-datastore.challenges = [day1];
+const day2 = {
+    "id": "pixelscamp2017-day2",
+    "event_id": "pixelscamp2017",
+
+    // descriptions: title, slug, rules
+    "form": {
+        "title": "Pixels Camp 2017: Grab the Bag! (September 29th)",
+        "slug": "Thanks for visiting our DevNet booth! Please enter your guess below for our daily giveaway.<br/>We will be giving away one bag per day and will announce the winner at 5pm. You must be a DevNet member and be present to win.",
+        "rules": "The one that You must be present to win. The daily winner will be the one that has the closest estimate to the exact weight. If there is a tie, the first one that entered it wins. Winner announced at 5pm. One submission per applicant. Must be present to win - we pick next closest estimate.",
+        "items": [
+            {
+                "question": "Enter Your Guess: Weight of the Bag (in grams)",
+                "slug": "For example: 3672",
+                "type": "integer"
+            }
+        ]
+    },
+
+    // ISO format, GMT 
+    "begin": "2017-09-29T10:00:00.000Z", // 9AM, Lisbon (GMT+1)
+    "end": "2017-09-29T18:00:00.000Z", // 5PM, Lisbon (GMT+1)
+
+    // [TODO]compute from current time
+    // not started, active, cancelled, finished
+    "status": "not started"
+}
+const day3 = {
+    "id": "pixelscamp2017-day3",
+    "event_id": "pixelscamp2017",
+
+    // descriptions: title, slug, rules
+    "form": {
+        "title": "Pixels Camp 2017: Grab the Bag! (September 30th)",
+        "slug": "Thanks for visiting our DevNet booth! Please enter your guess below for our daily giveaway.<br/>We will be giving away one bag per day and will announce the winner at 4pm. You must be a DevNet member and be present to win.",
+        "rules": "The one that You must be present to win. The daily winner will be the one that has the closest estimate to the exact weight. If there is a tie, the first one that entered it wins. Winner announced at 4pm. One submission per applicant. Must be present to win - we pick next closest estimate.",
+        "items": [
+            {
+                "question": "Enter Your Guess: Weight of the Bag (in grams)",
+                "slug": "For example: 3672",
+                "type": "integer"
+            }
+        ]
+    },
+
+    // ISO format, GMT 
+    "begin": "2017-09-30T10:00:00.000Z", // 9AM, Lisbon (GMT+1)
+    "end": "2017-09-30T17:00:00.000Z", // 4PM, Lisbon (GMT+1)
+
+    // [TODO]compute from current time
+    // not started, active, cancelled, finished
+    "status": "not started"
+}
+datastore.challenges = [day1, day2, day3];
 
 
 //
@@ -124,6 +186,7 @@ router.post("/:challenge/answers", function (req, res) {
 //
 // List answers
 //
+
 router.get("/:challenge/answers", function (req, res) {
 
     // [TODO] Check authentication
@@ -144,6 +207,37 @@ router.get("/:challenge/answers", function (req, res) {
             all.push(submitterAnswerToChallenge);
         }
     });
+
+    return sendSuccess(res, 200, all);
+});
+
+
+//
+// Compute winners
+//
+
+router.get("/:challenge/winners", function (req, res) {
+
+    // [TODO] Check authentication
+
+
+    // Check the challenge exists
+    const challengeId = req.params.challenge;
+    if (!challengeId) {
+        return sendError(res, 403, "challenge does not exist", `no challenge found with id: ${challengeId}`);
+    }
+
+    // Retreive answers for the challenge
+    var all = [];
+    Object.keys(datastore.answers).forEach(function (submitter) {
+        var submitterAnswers = datastore.answers[submitter]
+        var submitterAnswerToChallenge = submitterAnswers[challengeId];
+        if (submitterAnswerToChallenge) {
+            all.push(submitterAnswerToChallenge);
+        }
+    });
+
+    // [TODO] Compute the top 50 winners
 
     return sendSuccess(res, 200, all);
 });
