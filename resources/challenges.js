@@ -57,9 +57,9 @@ router.get("/", function (req, res) {
 
     // Update the status property depending on the current date, versus start/begin dates
     // enum: not started, active, cancelled, finished
-    var now = new Date(Date.now());
 
     // Check is now was specified as a query parameter
+    var now = new Date(Date.now());
     if (req.query.now) {
         now = new Date(req.query["now"]);
     }
@@ -74,7 +74,7 @@ router.get("/", function (req, res) {
 
 
 //
-// Post answer
+// Submit answer
 //
 
 datastore.answers = {};
@@ -100,7 +100,23 @@ router.post("/:challenge/answers", function (req, res) {
     // Check the challenge exists
     const challengeId = req.params.challenge;
     if (!challengeId) {
-        return sendError(res, 403, "challenge does not exist", `no challenge found with id: ${challengeId}`);
+        return sendError(res, 403, "challenge not found", "challenge identifier not found on the GET query path");
+    }
+    var challenge = datastore.challenges.find(function (elem) {
+        return (elem.id == challengeId);
+    });
+    if (!challenge) {
+        return sendError(res, 403, "challenge not found", `no challenge found with id: ${challengeId}`);
+    }
+
+    // Is the challenge still opened
+    var now = new Date(Date.now());
+    if (req.query.now) {
+        now = new Date(req.query["now"]);
+    }
+    var status = updateStatus(challenge, now);
+    if (status != "active") {
+        return sendError(res, 403, "challenge not active", `status: '${status}' for challenge : ${challengeId}`);
     }
 
     // Check the submitter has not already submitted
@@ -115,7 +131,7 @@ router.post("/:challenge/answers", function (req, res) {
         submitterAnswers = {};
     }
 
-    // Check answer is correct
+    // Check answer is correctly formatted
     const weight = req.body.weight;
     if (!weight) {
         return sendError(res, 400, "incorrect submission", "no weight specified");
@@ -153,7 +169,13 @@ router.get("/:challenge/answers", function (req, res) {
     // Check the challenge exists
     const challengeId = req.params.challenge;
     if (!challengeId) {
-        return sendError(res, 403, "challenge does not exist", `no challenge found with id: ${challengeId}`);
+        return sendError(res, 403, "challenge not found", "challenge identifier not found on the GET query path");
+    }
+    var challenge = datastore.challenges.find(function (elem) {
+        return (elem.id == challengeId);
+    });
+    if (!challenge) {
+        return sendError(res, 403, "challenge not found", `no challenge found with id: ${challengeId}`);
     }
 
     // Retreive answers for the challenge
@@ -184,7 +206,13 @@ router.get("/:challenge/winners", function (req, res) {
     // Check the challenge exists
     const challengeId = req.params.challenge;
     if (!challengeId) {
-        return sendError(res, 403, "challenge does not exist", `no challenge found with id: ${challengeId}`);
+        return sendError(res, 403, "challenge not found", "challenge identifier not found on the GET query path");
+    }
+    var challenge = datastore.challenges.find(function (elem) {
+        return (elem.id == challengeId);
+    });
+    if (!challenge) {
+        return sendError(res, 403, "challenge not found", `no challenge found with id: ${challengeId}`);
     }
 
     // Retreive answers for the challenge
@@ -198,8 +226,14 @@ router.get("/:challenge/winners", function (req, res) {
     });
 
     // [TODO] Compute the top 50 winners
+    var max = 50;
+    if (req.query.max) {
+        max = parseInt(req.query.max);
+        delete req.query.max
+    }
+    var winners = pickWinners(challenge, all, req.query, max);
 
-    return sendSuccess(res, 200, all);
+    return sendSuccess(res, 200, winners);
 });
 
 
@@ -211,6 +245,10 @@ module.exports = router;
 //
 
 function updateStatus(challenge, now) {
+    // Pick current time if now is not specified
+    if (!now) {
+        now = new Date(Date.now());
+    }
 
     if (challenge.cancelled) {
         return "cancelled";
@@ -225,4 +263,49 @@ function updateStatus(challenge, now) {
     }
 
     return "active";
+}
+
+
+function pickWinners(challenge, answers, query, max) {
+
+    // Check solution passed as query parameters is well formatted
+    if (!query.weight) {
+        debug(`weight not found in solution submitted for challenge: ${challenge.id}`);
+        return undefined;
+    }
+    var weight = parseInt(query.weight);
+    if (!weight) {
+        debug(`wrong solution format submitted for challenge: ${challenge.id}`);
+        return undefined;
+    }
+
+    // Add a score to each answer
+    var scored = answers.map(function (elem) {
+        // Integer part of the score is the proximity to the answer
+        elem.score = Math.abs(elem.data.weight - weight);
+
+        // Floating part of the scoreis the proximity to the challenge start
+        var seconds = new Date(elem.createdAt).getTime() - new Date(challenge.begin).getTime();
+        if (seconds < 0) {
+            debug(`unexpected answer from ${elem.submitter.devnetId}, submitted before challenge began: ${challenge.id}}`);
+            elem.score = 100000;
+        }
+        else {
+            elem.score = parseFloat("" + elem.score + "." + seconds);
+        }
+
+        return elem;
+    });
+
+    // Sort by score
+    var sorted = scored.sort(function (answer1, answer2) {
+        return (answer2 - answer1);
+    });
+
+    // Return first max answers
+    if (max) {
+        sorted = sorted.slice(0, max);
+    }
+
+    return sorted;
 }

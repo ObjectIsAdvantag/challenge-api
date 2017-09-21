@@ -88,3 +88,28 @@ GET {{server}}/api/challenges/pixelscamp2017-day1/answers
     }
 ]
 ```
+
+
+### Compute winners
+
+```shell
+GET {{server}}/api/challenges/pixelscamp2017-day1/winners?weight=12345
+```
+
+```json
+[
+    {
+        "createdAt": "2017-09-20T16:34:24.204Z",
+        "data": {
+            "weight": 12345
+        },
+        "submitter": {
+            "email": "stsfartz@cisco.com",
+            "devnetId": "123456789",
+            "firstName": "Stève",
+            "lastName": "Sfartz"
+        },
+        "score": 1.4224165
+    }
+]
+```
