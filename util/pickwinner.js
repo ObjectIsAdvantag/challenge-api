@@ -5,18 +5,22 @@ if (!weight) {
     console.log(`wrong solution format submitted for challenge`);
     return undefined;
 }
+console.log(`looking for best answer close to ${weight}`);
+
 
 // Read input
-var data = require('fs').readFileSync("./deduplicated.json");
-var answers = JSON.parse(data);
+const data = require('fs').readFileSync("./deduplicated.json");
+const answers = JSON.parse(data);
+console.log(`picking among ${answers.length} answers`);
 
 // Add a score to each answer
-var scored = answers.map(function (elem) {
+let challengeStart = process.env.CHALLENGE_START || "2017-09-22T09:30:00Z";
+let scored = answers.map(function (elem) {
     // Integer part of the score is the proximity to the answer
     elem.score = Math.abs(elem.guess - weight);
 
-    // Floating part of the scoreis the proximity to the challenge start
-    var seconds = new Date(elem.createdAt).getTime() - new Date("2017-09-22T09:30:00Z").getTime();
+    // Floating part of the score is the proximity to the challenge start
+    var seconds = new Date(elem.createdAt).getTime() - new Date(challengeStart).getTime();
     if (seconds < 0) {
         console.log(`unexpected answer from ${elem.profile}, submitted before challenge began`);
         elem.score = 100000;
@@ -29,7 +33,7 @@ var scored = answers.map(function (elem) {
 });
 
 // Sort by score
-var sorted = scored.sort(function (answer1, answer2) {
+let sorted = scored.sort(function (answer1, answer2) {
     return (answer1.score - answer2.score);
 });
 

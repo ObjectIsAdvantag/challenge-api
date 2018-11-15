@@ -1,0 +1,146 @@
+[
+  {
+    "challenge": "tests",
+    "profile": "d5ffece1-4021-11e7-912a-02420ae97103",
+    "fullname": "Steve Sfartz",
+    "first": "Steve",
+    "last": "Sfartz",
+    "guess": 345,
+    "createdAt": "2018-11-12T07:31:26Z"
+  },
+  {
+    "challenge": "tests",
+    "profile": null,
+    "fullname": "Stève",
+    "first": null,
+    "last": null,
+    "guess": 123,
+    "createdAt": "2018-11-15T12:58:08Z"
+  },
+  {
+    "challenge": "tests",
+    "profile": null,
+    "fullname": "Stève",
+    "first": null,
+    "last": null,
+    "guess": 231,
+    "createdAt": "2018-11-15T14:11:28Z"
+  },
+  {
+    "challenge": "tests",
+    "profile": "d5ffece1-4021-11e7-912a-02420ae97103",
+    "fullname": "Steve Sfartz",
+    "first": "Steve",
+    "last": "Sfartz",
+    "guess": 456,
+    "createdAt": "2018-11-15T14:14:44Z"
+  },
+  {
+    "challenge": "day1",
+    "profile": "d5ffece1-4021-11e7-912a-02420ae97103",
+    "fullname": "Steve Sfartz",
+    "first": "Steve",
+    "last": "Sfartz",
+    "guess": 789,
+    "createdAt": "2018-11-15T15:32:12Z"
+  },
+  {
+    "challenge": "day1",
+    "profile": "d5ffece1-4021-11e7-912a-02420ae97103",
+    "fullname": "Steve Sfartz",
+    "first": "Steve",
+    "last": "Sfartz",
+    "guess": "cisco id",
+    "createdAt": "2018-11-15T15:35:23Z"
+  },
+  {
+    "challenge": "day1",
+    "profile": "6956638e-36fd-11e7-b5f2-02420ae95b06",
+    "fullname": "Steve Sfartz",
+    "first": "Steve",
+    "last": "Sfartz",
+    "guess": "github",
+    "createdAt": "2018-11-15T15:42:34Z"
+  },
+  {
+    "challenge": "day1",
+    "profile": "6956638e-36fd-11e7-b5f2-02420ae95b06",
+    "fullname": "Steve Sfartz",
+    "first": "Steve",
+    "last": "Sfartz",
+    "guess": "google",
+    "createdAt": "2018-11-15T15:43:36Z"
+  },
+  {
+    "challenge": "day1",
+    "profile": "d5ffece1-4021-11e7-912a-02420ae97103",
+    "fullname": "Steve Sfartz",
+    "first": "Steve",
+    "last": "Sfartz",
+    "guess": "teams",
+    "createdAt": "2018-11-15T15:44:57Z"
+  },
+  {
+    "challenge": "day1",
+    "profile": "5ffece1-4021-11e7-912a-02420ae97103",
+    "fullname": "TestInvalidGuess",
+    "first": "Steve",
+    "last": "Sfartz",
+    "guess": "007",
+    "createdAt": "2018-11-15T21:27:09Z"
+  },
+  {
+    "challenge": "day1",
+    "profile": null,
+    "fullname": "Dauria",
+    "first": null,
+    "last": null,
+    "guess": "007",
+    "createdAt": "2018-11-15T16:05:03Z"
+  },
+  {
+    "challenge": "day1",
+    "profile": "c1cfbefb-382a-11e7-b63e-02420ae95b06",
+    "fullname": "Janel Kratky",
+    "first": "Janel",
+    "last": "Kratky",
+    "guess": 414456,
+    "createdAt": "2018-11-15T16:07:06Z"
+  },
+  {
+    "challenge": "day1",
+    "profile": "196698e1-bfdf-11e7-9d9e-02420ae95a0b",
+    "fullname": "D'Auria Henry",
+    "first": "D'Auria",
+    "last": "Henry",
+    "guess": 411,
+    "createdAt": "2018-11-15T16:18:10Z"
+  },
+  {
+    "challenge": "day1",
+    "profile": "cc96841f-e8f2-11e8-903c-da94649c43cb",
+    "fullname": "D H",
+    "first": "D",
+    "last": "H",
+    "guess": "Facebook again",
+    "createdAt": "2018-11-15T16:24:54Z"
+  },
+  {
+    "challenge": "day1",
+    "profile": "c1cfbefb-382a-11e7-b63e-02420ae95b06",
+    "fullname": "Janel Kratky",
+    "first": "Janel",
+    "last": "Kratky",
+    "guess": 1599.05944545,
+    "createdAt": "2018-11-15T16:50:15Z"
+  },
+  {
+    "challenge": "day1",
+    "profile": "70861c9d-3f65-11e7-8f1f-02420ae95b06",
+    "fullname": "Casey Tong",
+    "first": "Casey",
+    "last": "Tong",
+    "guess": 1234,
+    "createdAt": "2018-11-15T22:07:15Z"
+  }
+]

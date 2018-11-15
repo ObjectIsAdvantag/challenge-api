@@ -3,32 +3,56 @@
 const getStdin = require('get-stdin');
 
 getStdin().then(str => {
-    var submissions = JSON.parse(str);
+    let submissions = JSON.parse(str);
+    var ignored = 0;
 
     console.log(`before deduplication: total of ${submissions.length} submissions`);
 
     //
-    // Remove duplicates
+    // Filter out other challenges
     //
-    var filtered = {};
+    let filteredChallenge = [];
+    const challenge = process.env.CHALLENGE || `day1`;
     submissions.forEach(function (elem) {
-        if (!(elem.profile && elem.first && elem.last && elem.guess && elem.createdAt)) {
-            console.log("ignoring entry:" + elem.guess);
+        if (!(elem.challenge) || (elem.challenge != challenge)) {
+            console.log(`${++ignored}: ignoring entry: ${elem.guess}, from other challenge: ${elem.challenge}`);
             return;
         }
 
+        filteredChallenge.push(elem);
+    });
+
+    //
+    // Remove invalid entries and duplicates
+    //
+    var filtered = {};
+    filteredChallenge.forEach(function (elem) {
+        // An entry MUST have a profile, a guess, a date and a name (either full / first or last)
+        if (!(elem.profile && ((elem.first && elem.last) || (elem.fullname)) && elem.guess && elem.createdAt)) {
+            console.log(`${++ignored}: ignoring invalid entry: ${elem.guess}, from: ${elem.fullname} or (${elem.first} / ${elem.last})`);
+            return;
+        }
+
+        // Remove invalid entries (non integer guesses)
+        let parsed = parseInt(elem.guess);
+        if (!parsed) {
+            console.log(`${++ignored}: ignoring invalid guess: ${elem.guess}, from: ${elem.fullname} or (${elem.first} / ${elem.last})`);
+            return;
+        }
+        elem.guess = parsed;
+
+        // Keep only ealiest entry for a profile
         var exists = filtered[elem.profile];
         if (exists) {
-            // Check data is less recent
+            // Remove newer entries, keeping the earlist
             if (exists.createdAt < elem.createdAt) {
-                console.log("ignoring duplicate: " + elem.createdAt);
+                console.log(`${++ignored}: ignoring duplicate from: ${elem.fullname} | (${elem.first} / ${elem.last}), profile: ${elem.profile}, priorizing earliest!`);
                 return;
             }
         }
 
         // add entry
         filtered[elem.profile] = elem;
-
     });
 
     // log out
